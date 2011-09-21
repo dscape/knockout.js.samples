@@ -1,0 +1,35 @@
+<script type="text/javascript" src="../libs/jquery-1.6.3.min.js"></script>
+<script type="text/javascript" src="../libs/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="../libs/knockout-1.2.1.min.js"></script>
+<script type="text/javascript" src="../libs/jquery.address.min.js"></script>
+<script type="text/javascript" src="../libs/knockout.address.js"></script>
+<script type="text/javascript" src="model.js"></script>
+<ul class="folders" data-bind="template: { name: 'folderTemplate', foreach: folders }"></ul>
+<table class="mails" data-bind="visible: !selectedMail()">
+    <thead><tr><th>From</th><th>To</th><th>Subject</th><th>Date</th></tr></thead>
+    <tbody data-bind="template: { name: 'mailsGridRow', foreach: currentPageMails }"></tbody>
+</table>
+<div class="viewMail" data-bind="template: { name: 'mailTemplate', data: selectedMail }"></div>
+<script type="text/html" id="mailTemplate">    
+    <div class="mailInfo">
+        <h1>${subject}</h1>
+        <p><label>From</label>: ${from}</p>
+        <p><label>To</label>: ${to}</p>
+        <p><label>Date</label>: ${date}</p>
+    </div>
+    <p class="message" data-bind="html: messageContent" />
+</script>
+<script type="text/html" id="mailsGridRow">
+    <tr data-bind="click: function() { mailViewModel.selectedMailId(id) }">
+        <td>${from}</td>
+        <td>${to}</td>
+        <td>${subject}</td>
+        <td>${date}</td>
+    </tr>      
+</script>
+<script type="text/html" id="folderTemplate">
+    <li data-bind="css: { selected: $data == mailViewModel.selectedFolder() },
+               click: function() { mailViewModel.selectFolder($data) }">
+        ${$data}
+    </li>       
+</script>
