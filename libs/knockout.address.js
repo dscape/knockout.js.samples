@@ -19,7 +19,6 @@
                 });
             }
         });
-
         // When the URL changes, update the observable
         $.address.change(function (evt) {
             currentParams[hashPropertyName] = hashPropertyName in evt.parameters ? evt.parameters[hashPropertyName] : null;
