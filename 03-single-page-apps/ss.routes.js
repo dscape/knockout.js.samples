@@ -3,7 +3,6 @@ ko.link_observable_to_ss_route = function (v) {
                        , '/:folder/:email' : { on: update_bindings }
                        }
     , router         = Router(routes)
-    , $              = window.jQuery
     , folder         = v.selectedFolder
     , email          = v.selectedMailId
     , go             = v.go
