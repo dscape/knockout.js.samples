@@ -309,7 +309,11 @@
   Router.prototype.getState = function() {
     return this.state;
   };
-  
+
+  Router.prototype.currentRoute = function() {
+    return this.explode();
+  }
+
   Router.prototype.getRoute = function(v) {
 
     var ret = v;

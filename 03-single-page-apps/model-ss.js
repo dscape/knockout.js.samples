@@ -579,7 +579,7 @@ $(document).ready(function(){
   }, viewModel);
   
   window.mailViewModel = viewModel;
-  ko.link_observable_to_ss_route(viewModel.go);
+  ko.link_observable_to_ss_route(viewModel);
   
   ko.applyBindings(viewModel);
 });
