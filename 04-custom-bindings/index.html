@@ -1,0 +1,25 @@
+<script type="text/javascript" src="../libs/jquery-1.6.3.min.js"></script>
+<script type="text/javascript" src="../libs/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="../libs/knockout-1.2.1.min.js"></script>
+<script type="text/javascript" src="../libs/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="style.css" />
+
+        <h3 data-bind="text: question"></h3>
+<p>Please distribute <span data-bind="text: pointsBudget"></span> points between the following options.</p>
+
+<table>
+    <thead><tr><th>Option</th><th>Importance</th></tr></thead>
+    <tbody data-bind="template: { name: 'answerTemplate', foreach: answers }"></tbody>
+</table>
+<script type="text/html" id="answerTemplate">
+    <tr>
+        <td>${ text }</td>
+        <td data-bind="starRating: points"></td>
+    </tr>
+</script>
+
+<h3 data-bind="fadeVisible: pointsUsed() > pointsBudget">You've used too many points! Please remove some.</h3>
+<p data-bind="visible: pointsUsed() <= pointsBudget">You've got <b data-bind="text: pointsBudget - pointsUsed()"></b> points left to use.</p>
+<button data-bind="jqButton: true, enable: pointsUsed() <= pointsBudget, click: save">Finished</button>
+
+<script src="model.js" type="text/javascript"></script>
