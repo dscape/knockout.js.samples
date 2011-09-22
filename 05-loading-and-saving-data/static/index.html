@@ -1,0 +1,29 @@
+<script type="text/javascript" src="/jquery-1.6.3.min.js"></script>
+<script type="text/javascript" src="/jquery.tmpl.min.js"></script>
+<script type="text/javascript" src="/knockout-1.2.1.min.js"></script>
+<script type="text/javascript" src="/jquery-ui.min.js"></script>
+
+<h3>Tasks</h3>
+
+<form data-bind="submit: addTask">
+    Add task: <input data-bind="value: newTaskText" placeholder="What needs to be done?" />
+    <button type="submit">Add</button>
+</form>
+
+<ul data-bind="template: { name: 'taskTemplate', foreach: tasks }, visible: tasks().length > 0"></ul>
+<script type="text/html" id="taskTemplate">
+    <li>
+        <input type="checkbox" data-bind="checked: isDone" />
+        <input data-bind="value: title, enable: !isDone()" />
+        <a href="#" data-bind="click: remove">Delete</a>
+    </li>
+</script>
+
+<button data-bind="click: save">Save</button>
+
+You have <b data-bind="text: incompleteTasks().length">&nbsp;</b> incomplete task(s)
+<span data-bind="visible: incompleteTasks().length == 0"> - it's beer time!</span>
+
+<pre name="tasks" data-bind="text: ko.toJSON(tasks)"></pre><br/>
+
+<script type="text/javascript" src="/model.js"></script>
