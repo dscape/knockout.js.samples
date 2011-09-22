@@ -1,0 +1,10 @@
+{ "name"            : "knockoutjs-express"
+, "description"     : "tutorial from learn.knockoutjs.com"
+, "homepage"        : "http://github.com/dscape/knockout.js.samples"
+, "repository"      : "git://github.com/dscape/knockout.js.samples"
+, "version"         : "0.0.1"
+, "author"          : "Nuno Job <nunojobpinto@gmail.com> (http://nunojob.com)"
+, "keywords"        : ["knockoutjs", "knockout", "express", "expressjs"]
+, "dependencies"    : {"express": "2.4.x"}
+, "main"            : "./server.js"
+}
