@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(() => {
   // Raw catalog data - would come from the server
   var availableMeals = [
       { mealName: "Standard (sandwich)", price: 0 },
@@ -24,7 +24,7 @@ $(document).ready(function() {
           new seatReservation("Steve"),
           new seatReservation("Bert")
       ])
-      ,addSeat: function() {
+      ,addSeat() {
           this.seats.push(new seatReservation());   
       }
   };

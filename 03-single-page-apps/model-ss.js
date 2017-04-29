@@ -553,17 +553,17 @@ var all_labels =
    ]
  };
 
-$(document).ready(function(){
+$(document).ready(() => {
   var viewModel = {
       // Data
       folders: ['Inbox', 'Archive', 'Sent', 'Spam'],
       currentPageMails: ko.observableArray([]),
       selectedFolder: ko.observable('Inbox'),
       selectedMailId: ko.observable(),
-      go: function(a) { console.log(a); return ko.observable()}(),
+      go: (a => { console.log(a); return ko.observable()})(),
   
       // Behaviours
-      selectFolder: function (folder) {
+      selectFolder(folder) {
           this.selectedMailId(null);
           this.selectedFolder(folder);
       }   
@@ -575,7 +575,7 @@ $(document).ready(function(){
   
   viewModel.selectedMail = ko.dependentObservable(function() {
       var mailIdToFind = this.selectedMailId();
-      return ko.utils.arrayFirst(viewModel.currentPageMails(), function(item) { return item.id == mailIdToFind; });   
+      return ko.utils.arrayFirst(viewModel.currentPageMails(), item => item.id == mailIdToFind);   
   }, viewModel);
   
   window.mailViewModel = viewModel;

@@ -1,5 +1,4 @@
-(function(window, undefined) {
-
+(((window, undefined) => {
   var dloc = document.location;
 
   function regifyString(str) {
@@ -28,7 +27,7 @@
   }
 
   window.Router = Router;
-  
+
   function Router(routes) {
 
     if(!(this instanceof Router)) return new Router(routes);
@@ -90,8 +89,8 @@
     }
 
     function parse(routes, path, len, matched) {
-
-      var roughmatch, exactmatch;
+      var roughmatch;
+      var exactmatch;
       var route = routes[path];
 
       if(!route || path === '/') {
@@ -102,7 +101,6 @@
             roughmatch = path.match(new RegExp('^' + r + '(.*)?'));
             
             if(exactmatch && roughmatch) {
-
               // convert roughmatch to an array of names without `/`s.
               for (var i = roughmatch.length; i >= 0; i--) {
                 if (roughmatch[i]) {
@@ -119,10 +117,10 @@
                 continue;
               }
 
-              var partsCount = exactmatch[0].split('/').length - 1,
-                  _path = roughmatch.slice(exactmatch.length),
-                  _len = len - partsCount,
-                  _matched = matched.concat(exactmatch.slice(1));
+              var partsCount = exactmatch[0].split('/').length - 1;
+              var _path = roughmatch.slice(exactmatch.length);
+              var _len = len - partsCount;
+              var _matched = matched.concat(exactmatch.slice(1));
 
               if (exactmatch.length > 1) {
                 route = routes[r];
@@ -161,7 +159,7 @@
                 }
               }
               else {
-                self.events[type][add]({ fn: fn, val: matched || path });
+                self.events[type][add]({ fn, val: matched || path });
               }
             };
 
@@ -184,7 +182,7 @@
         else {
           self.noroute(matched);
         }
-      };
+      }
       return true;
     }
 
@@ -262,7 +260,7 @@
           }
         }
         else {
-          this.events[store].push({ fn: fn, val: null });
+          this.events[store].push({ fn, val: null });
         }
       }
     }
@@ -282,7 +280,7 @@
     }    
   };
 
-  Router.prototype.explode = function() {
+  Router.prototype.explode = () => {
     var v = dloc.hash;
     if(v[1] === '/') { v=v.slice(1); }
     return v.slice(1, v.length).split("/");
@@ -305,7 +303,7 @@
     listener.setHash(url.join('/'));
     return url;
   };
-  
+
   Router.prototype.getState = function() {
     return this.state;
   };
@@ -350,117 +348,117 @@
     }
   };
 
-  var version = '0.4.0',
-      mode = 'modern',
-      listener = { 
+  var version = '0.4.0';
+  var mode = 'modern';
 
-    hash: dloc.hash,
+  var listener = { 
 
-    check:  function () {
-      var h = dloc.hash;
-      if (h != this.hash) {
-        this.hash = h;
-        this.onHashChanged();
-      }
-    },
+hash: dloc.hash,
 
-    fire: function() {
-      if(mode === 'modern') {
-        window.onhashchange();
-      }
-      else {
-        this.onHashChanged();
-      }
-    },
+check() {
+  var h = dloc.hash;
+  if (h != this.hash) {
+    this.hash = h;
+    this.onHashChanged();
+  }
+},
 
-    init: function (fn) {
+fire() {
+  if(mode === 'modern') {
+    window.onhashchange();
+  }
+  else {
+    this.onHashChanged();
+  }
+},
 
-      var self = this;
+init(fn) {
 
-      if(!window.Router.listeners) {
-        window.Router.listeners = [];
-      }
-      
-      function onchange() {
-        for(var i = 0, l = window.Router.listeners.length; i < l; i++) {
-          window.Router.listeners[i]();
+  var self = this;
+
+  if(!window.Router.listeners) {
+    window.Router.listeners = [];
+  }
+  
+  function onchange() {
+    for(var i = 0, l = window.Router.listeners.length; i < l; i++) {
+      window.Router.listeners[i]();
+    }
+  }
+
+  //note IE8 is being counted as 'modern' because it has the hashchange event
+  if('onhashchange' in window && 
+      (document.documentMode === undefined || document.documentMode > 7)) {
+    window.onhashchange = onchange;
+    mode = 'modern';
+  }
+  else { // IE support, based on a concept by Erik Arvidson ...
+
+    var frame = document.createElement('iframe');
+    frame.id = 'state-frame';
+    frame.style.display = 'none';
+    document.body.appendChild(frame);
+    this.writeFrame('');
+
+    if ('onpropertychange' in document && 'attachEvent' in document) {
+      document.attachEvent('onpropertychange', () => {
+        if (event.propertyName === 'location') {
+          self.check();
         }
-      }
+      });
+    }
 
-      //note IE8 is being counted as 'modern' because it has the hashchange event
-      if('onhashchange' in window && 
-          (document.documentMode === undefined || document.documentMode > 7)) {
-        window.onhashchange = onchange;
-        mode = 'modern';
-      }
-      else { // IE support, based on a concept by Erik Arvidson ...
+    window.setInterval(() => { self.check(); }, 50);
+    
+    this.onHashChanged = onchange;
+    mode = 'legacy';
+  }
 
-        var frame = document.createElement('iframe');
-        frame.id = 'state-frame';
-        frame.style.display = 'none';
-        document.body.appendChild(frame);
-        this.writeFrame('');
+  window.Router.listeners.push(fn);      
+  
+  return mode;
+},
 
-        if ('onpropertychange' in document && 'attachEvent' in document) {
-          document.attachEvent('onpropertychange', function () {
-            if (event.propertyName === 'location') {
-              self.check();
-            }
-          });
-        }
+destroy(fn) {
+  if (!window.Router || !window.Router.listeners) return;
 
-        window.setInterval(function () { self.check(); }, 50);
-        
-        this.onHashChanged = onchange;
-        mode = 'legacy';
-      }
+  var listeners = window.Router.listeners;
 
-      window.Router.listeners.push(fn);      
-      
-      return mode;
-    },
+  for (var i = listeners.length - 1; i >= 0; i--) {
+    if (listeners[i] === fn) {
+      listeners.splice(i, 1);
+    }
+  }
+},
 
-    destroy: function (fn) {
-      if (!window.Router || !window.Router.listeners) return;
+setHash(s) {
 
-      var listeners = window.Router.listeners;
+  // Mozilla always adds an entry to the history
+  if (mode === 'legacy') {
+    this.writeFrame(s);
+  }
+  dloc.hash = (s[0] === '/') ? s : '/' + s;
+  return this;
+},
 
-      for (var i = listeners.length - 1; i >= 0; i--) {
-        if (listeners[i] === fn) {
-          listeners.splice(i, 1);
-        }
-      }
-    },
+writeFrame(s) { 
+  // IE support...
+  var f = document.getElementById('state-frame');
+  var d = f.contentDocument || f.contentWindow.document;
+  d.open();
+  d.write("<script>_hash = '" + s + "'; onload = parent.listener.syncHash;<script>");
+  d.close();
+},
 
-    setHash: function (s) {
+syncHash() { 
+  // IE support...
+  var s = this._hash;
+  if (s != dloc.hash) {
+    dloc.hash = s;
+  }
+  return this;
+},
 
-      // Mozilla always adds an entry to the history
-      if (mode === 'legacy') {
-        this.writeFrame(s);
-      }
-      dloc.hash = (s[0] === '/') ? s : '/' + s;
-      return this;
-    },
-
-    writeFrame: function (s) { 
-      // IE support...
-      var f = document.getElementById('state-frame');
-      var d = f.contentDocument || f.contentWindow.document;
-      d.open();
-      d.write("<script>_hash = '" + s + "'; onload = parent.listener.syncHash;<script>");
-      d.close();
-    },
-
-    syncHash: function () { 
-      // IE support...
-      var s = this._hash;
-      if (s != dloc.hash) {
-        dloc.hash = s;
-      }
-      return this;
-    },
-
-    onHashChanged:  function () {}
-  };
- 
-}(window));
+onHashChanged() {}
+};
+})(window));

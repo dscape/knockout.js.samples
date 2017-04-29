@@ -12,21 +12,19 @@ function taskListViewModel() {
         this.newTaskText("");    
     };
     this.incompleteTasks = ko.dependentObservable(function() {
-        return ko.utils.arrayFilter(this.tasks(), function(task) { return !task.isDone() && !task._destroy; });
+        return ko.utils.arrayFilter(this.tasks(), task => !task.isDone() && !task._destroy);
     }, this);
     this.save = function() {
         $.ajax("/tasks", {
             data: ko.toJSON({tasks: this.tasks}),
             type: "post",
             contentType: "application/json",
-            success: function(result) { alert(JSON.stringify(result)); }
+            success(result) { alert(JSON.stringify(result)); }
         });
     }; 
     var self = this;
-    $.get("/tasks", function(data) {
-        var mappedTasks = $.map(data, function(item) {
-            return new task(item.title, item.isDone, self);
-        });
+    $.get("/tasks", data => {
+        var mappedTasks = $.map(data, item => new task(item.title, item.isDone, self));
         self.tasks(mappedTasks);
     });
 }
