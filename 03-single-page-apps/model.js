@@ -553,7 +553,7 @@ var all_labels =
    ]
  };
 
-$(document).ready(function(){
+$(document).ready(() => {
   var viewModel = {
       // Data
       folders: ['Inbox', 'Archive', 'Sent', 'Spam'],
@@ -562,7 +562,7 @@ $(document).ready(function(){
       selectedMailId: ko.observable(),
   
       // Behaviours
-      selectFolder: function (folder) {
+      selectFolder(folder) {
           this.selectedMailId(null);
           this.selectedFolder(folder);
       }   
@@ -574,7 +574,7 @@ $(document).ready(function(){
   
   viewModel.selectedMail = ko.dependentObservable(function() {
       var mailIdToFind = this.selectedMailId();
-      return ko.utils.arrayFirst(viewModel.currentPageMails(), function(item) { return item.id == mailIdToFind; });   
+      return ko.utils.arrayFirst(viewModel.currentPageMails(), item => item.id == mailIdToFind);   
   }, viewModel);
   
   window.mailViewModel = viewModel;
